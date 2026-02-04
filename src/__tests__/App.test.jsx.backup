@@ -1,0 +1,53 @@
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import App from '../App';
+
+describe('Portfolio Platform', () => {
+  test('renders the header with logo', () => {
+    render(<App />);
+    const logoElement = screen.getByText(/PortfolioPro/i);
+    expect(logoElement).toBeInTheDocument();
+  });
+
+  test('displays featured projects section', () => {
+    render(<App />);
+    const featuredSection = screen.getByText(/Featured Projects/i);
+    expect(featuredSection).toBeInTheDocument();
+  });
+
+  test('displays initial projects', () => {
+    render(<App />);
+    const projectElements = screen.getAllByText(/Project/i);
+    expect(projectElements.length).toBeGreaterThan(0);
+  });
+
+  test('search functionality exists', () => {
+    render(<App />);
+    const searchInput = screen.getByPlaceholderText(/search projects/i);
+    expect(searchInput).toBeInTheDocument();
+  });
+
+  test('category filter exists', () => {
+    render(<App />);
+    const categoryFilter = screen.getByText(/Filter by Category/i);
+    expect(categoryFilter).toBeInTheDocument();
+  });
+
+  test('add project form renders', () => {
+    render(<App />);
+    const formTitle = screen.getByText(/Add New Project/i);
+    expect(formTitle).toBeInTheDocument();
+  });
+
+  test('about section shows platform features', () => {
+    render(<App />);
+    const features = screen.getByText(/Platform Features/i);
+    expect(features).toBeInTheDocument();
+  });
+
+  test('footer renders with contact info', () => {
+    render(<App />);
+    const footerText = screen.getByText(/Creative Agency/i);
+    expect(footerText).toBeInTheDocument();
+  });
+});

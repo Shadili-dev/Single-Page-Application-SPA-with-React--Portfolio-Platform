@@ -1,0 +1,120 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import ProjectCard from '../components/ProjectCard';
+import SearchBar from '../components/SearchBar';
+
+// Test data
+const mockProject = {
+  id: 1,
+  title: 'Test Project',
+  description: 'A test project description',
+  technologies: ['React', 'Node.js'],
+  category: 'Web Development',
+  image: 'test.jpg',
+  link: 'https://test.com',
+  featured: true,
+  date: '2024-01-01'
+};
+
+describe('Header Component', () => {
+  test('renders logo', () => {
+    render(<Header />);
+    const logo = screen.getByText(/PortfolioPro/i);
+    expect(logo).toBeInTheDocument();
+  });
+
+  test('renders navigation links', () => {
+    render(<Header />);
+    const projectsLink = screen.getByText(/Projects/i);
+    const addProjectLink = screen.getByText(/Add Project/i);
+    const aboutLink = screen.getByText(/About/i);
+    
+    expect(projectsLink).toBeInTheDocument();
+    expect(addProjectLink).toBeInTheDocument();
+    expect(aboutLink).toBeInTheDocument();
+  });
+
+  test('renders hero section', () => {
+    render(<Header />);
+    const heroTitle = screen.getByText(/Showcase Your Creative Work/i);
+    expect(heroTitle).toBeInTheDocument();
+  });
+});
+
+describe('Footer Component', () => {
+  test('renders current year', () => {
+    render(<Footer />);
+    const currentYear = new Date().getFullYear();
+    expect(screen.getByText(new RegExp(currentYear.toString()))).toBeInTheDocument();
+  });
+
+  test('renders contact information', () => {
+    render(<Footer />);
+    const contact = screen.getByText(/Contact/i);
+    const email = screen.getByText(/hello@creativeagency.com/i);
+    
+    expect(contact).toBeInTheDocument();
+    expect(email).toBeInTheDocument();
+  });
+});
+
+describe('ProjectCard Component', () => {
+  test('renders project title', () => {
+    render(<ProjectCard project={mockProject} />);
+    const title = screen.getByText(/Test Project/i);
+    expect(title).toBeInTheDocument();
+  });
+
+  test('renders project category', () => {
+    render(<ProjectCard project={mockProject} />);
+    const category = screen.getByText(/Web Development/i);
+    expect(category).toBeInTheDocument();
+  });
+
+  test('renders project technologies', () => {
+    render(<ProjectCard project={mockProject} />);
+    const tech1 = screen.getByText(/React/i);
+    const tech2 = screen.getByText(/Node.js/i);
+    
+    expect(tech1).toBeInTheDocument();
+    expect(tech2).toBeInTheDocument();
+  });
+
+  test('shows featured badge for featured projects', () => {
+    render(<ProjectCard project={mockProject} />);
+    const featuredBadge = screen.getByText(/⭐ Featured/i);
+    expect(featuredBadge).toBeInTheDocument();
+  });
+});
+
+describe('SearchBar Component', () => {
+  const mockProps = {
+    searchTerm: '',
+    onSearchChange: jest.fn(),
+    selectedCategory: 'All',
+    onCategoryChange: jest.fn(),
+    categories: ['All', 'Web Development', 'Mobile Development']
+  };
+
+  test('renders search input', () => {
+    render(<SearchBar {...mockProps} />);
+    const searchInput = screen.getByPlaceholderText(/search projects/i);
+    expect(searchInput).toBeInTheDocument();
+  });
+
+  test('renders category filter', () => {
+    render(<SearchBar {...mockProps} />);
+    const categoryFilter = screen.getByText(/Filter by Category/i);
+    expect(categoryFilter).toBeInTheDocument();
+  });
+
+  test('calls onSearchChange when typing', () => {
+    render(<SearchBar {...mockProps} />);
+    const searchInput = screen.getByPlaceholderText(/search projects/i);
+    
+    fireEvent.change(searchInput, { target: { value: 'test' } });
+    expect(mockProps.onSearchChange).toHaveBeenCalledWith('test');
+  });
+});
